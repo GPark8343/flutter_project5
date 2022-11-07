@@ -9,7 +9,7 @@ class MapScreen extends StatefulWidget {
 
   MapScreen(
       {this.initialLocation =
-          const PlaceLocation(latitude: 37.422, longtitude: -122.084),
+          const PlaceLocation(latitude: 37.422, longitude: -122.084),
       this.isSelecting = false});
 
   @override
@@ -33,22 +33,30 @@ class _MapScreenState extends State<MapScreen> {
         actions: [
           if (widget.isSelecting)
             IconButton(
-                onPressed:  _pickedLocation == null ? null: (){
-                  Navigator.of(context).pop(_pickedLocation);
-                },
+                onPressed: _pickedLocation == null
+                    ? null
+                    : () {
+                        Navigator.of(context).pop(_pickedLocation);
+                      },
                 icon: Icon(Icons.check))
         ],
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: LatLng(widget.initialLocation.latitude,
-              widget.initialLocation.longtitude),
+              widget.initialLocation.longitude),
           zoom: 16,
         ),
         onTap: widget.isSelecting ? _selectLocation : null,
-        markers: _pickedLocation == null
+        markers: (_pickedLocation == null && widget.isSelecting)
             ? {}
-            : {Marker(markerId: MarkerId('m1'), position: _pickedLocation!)},
+            : {
+                Marker(
+                    markerId: MarkerId('m1'),
+                    position: _pickedLocation ??
+                        LatLng(widget.initialLocation.latitude,
+                            widget.initialLocation.longitude))
+              },
       ),
     );
   }
